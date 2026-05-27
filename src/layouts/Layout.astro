@@ -11,6 +11,9 @@ const pageUrl = new URL(Astro.url.pathname, siteUrl).toString();
 // Google Analytics & Search Console（通过 Vercel 环境变量注入，本地开发时为空）
 const gaId = import.meta.env.PUBLIC_GA_ID;
 const gscCode = import.meta.env.PUBLIC_GSC_CODE;
+
+// 百度统计（通过 Vercel 环境变量注入）
+const baiduHmId = import.meta.env.PUBLIC_BAIDU_HM_ID || '1bcb13a8a510610b9e76f28f4db0447d';
 ---
 
 <!doctype html>
@@ -41,6 +44,17 @@ const gscCode = import.meta.env.PUBLIC_GSC_CODE;
         </script>
       </>
     )}
+
+    <!-- 百度统计 -->
+    <script>
+      var _hmt = _hmt || [];
+      (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?{baiduHmId}";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
