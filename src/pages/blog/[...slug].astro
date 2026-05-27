@@ -1,0 +1,320 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map(post => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+
+const siteUrl = 'https://yichongzhinan.com';
+const postUrl = `${siteUrl}/blog/${post.slug}`;
+const publishedDate = post.data.pubDate.toISOString();
+const modifiedDate = post.data.updatedDate
+  ? post.data.updatedDate.toISOString()
+  : publishedDate;
+
+const schemaData = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": post.data.title,
+  "description": post.data.description,
+  "datePublished": publishedDate,
+  "dateModified": modifiedDate,
+  "author": {
+    "@type": "Person",
+    "name": "异宠指南"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "异宠指南",
+    "logo": {
+      "@type": "ImageObject",
+      "url": `${siteUrl}/favicon.svg`
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": postUrl
+  }
+};
+---
+
+<Layout title={`${post.data.title} | 异宠指南`} description={post.data.description}>
+  <!-- Schema.org Article JSON-LD -->
+  <script type="application/ld+json" set:html={JSON.stringify(schemaData, null, 2)} />
+
+  <article class="blog-post">
+    <div class="post-container">
+      <header class="post-header">
+        <div class="post-tags-top">
+          <span class="post-category">{post.data.category}</span>
+          {post.data.tags.slice(0, 3).map(tag => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+        <h1>{post.data.title}</h1>
+        <p class="post-desc">{post.data.description}</p>
+        <div class="post-meta">
+          <time datetime={post.data.pubDate.toISOString()}>
+            {post.data.pubDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}
+          </time>
+          {post.data.updatedDate && (
+            <span class="updated">
+              更新于 {post.data.updatedDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </span>
+          )}
+        </div>
+      </header>
+
+      {post.data.heroImage && (
+        <div class="post-hero">
+          <img src={post.data.heroImage} alt={post.data.title} width="1200" height="630" loading="eager" />
+        </div>
+      )}
+
+      <div class="post-body">
+        <div class="post-content">
+          <Content />
+        </div>
+      </div>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .blog-post {
+    max-width: var(--max-width-wide);
+    margin: 0 auto;
+    padding: var(--space-2xl) var(--space-md);
+  }
+
+  .post-container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+  }
+
+  .post-header {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+    padding-bottom: var(--space-xl);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .post-tags-top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+    flex-wrap: wrap;
+  }
+
+  .post-category {
+    font-size: 0.8rem;
+    color: var(--color-accent);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .tag {
+    font-size: 0.75rem;
+    background: var(--color-primary-light);
+    color: var(--color-primary-dark);
+    padding: 0.15rem 0.6rem;
+    border-radius: var(--radius-full);
+    font-weight: 500;
+  }
+
+  .post-header h1 {
+    font-size: 2rem;
+    margin: var(--space-md) 0;
+    line-height: 1.3;
+    color: var(--color-text);
+  }
+
+  /* 文章头图 */
+  .post-hero {
+    max-width: var(--max-width-wide);
+    margin: 0 auto var(--space-2xl);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+  .post-hero img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .post-desc {
+    font-size: 1.05rem;
+    color: var(--color-text-secondary);
+    max-width: 600px;
+    margin: 0 auto var(--space-lg);
+    line-height: 1.7;
+  }
+
+  .post-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+  }
+
+  .updated {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+  }
+
+  /* 文章内容排版 */
+  .post-content {
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: var(--color-text);
+  }
+
+  .post-content h2 {
+    font-size: 1.5rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--color-primary-light);
+  }
+
+  .post-content h3 {
+    font-size: 1.25rem;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: var(--color-primary-dark);
+  }
+
+  .post-content p {
+    margin-bottom: 1.25rem;
+  }
+
+  .post-content ul,
+  .post-content ol {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+  }
+
+  .post-content li {
+    margin-bottom: 0.5rem;
+  }
+
+  .post-content blockquote {
+    border-left: 3px solid var(--color-primary);
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    background: var(--color-primary-light);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    color: var(--color-primary-dark);
+    font-style: italic;
+  }
+
+  .post-content blockquote p:last-child {
+    margin-bottom: 0;
+  }
+
+  .post-content pre {
+    background: var(--gray-800);
+    color: #e2e8f0;
+    padding: 1.25rem;
+    border-radius: var(--radius-md);
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .post-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+  }
+
+  .post-content th,
+  .post-content td {
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.75rem 1rem;
+    text-align: left;
+  }
+
+  .post-content th {
+    background: var(--color-primary-light);
+    font-weight: 600;
+    color: var(--color-primary-dark);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .post-content tr:last-child td {
+    border-bottom: none;
+  }
+
+  .post-content tr:nth-child(even) td {
+    background: var(--gray-50);
+  }
+
+  .post-content hr {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin: 2.5rem 0;
+  }
+
+  .post-content .tip,
+  .post-content .warning,
+  .post-content .danger {
+    padding: 1rem 1.25rem;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin: 1.5rem 0;
+    border-left: 3px solid;
+  }
+
+  .post-content .tip {
+    background: var(--color-accent-light);
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .post-content .warning {
+    background: #fef9e7;
+    border-color: var(--yellow-500);
+    color: #8a6914;
+  }
+
+  .post-content .danger {
+    background: #fef2f2;
+    border-color: var(--red-500);
+    color: #991b1b;
+  }
+
+  @media (max-width: 768px) {
+    .blog-post {
+      padding: var(--space-lg) var(--space-md);
+    }
+
+    .post-header h1 {
+      font-size: 1.65rem;
+    }
+
+    .post-content {
+      font-size: 1rem;
+    }
+  }
+</style>

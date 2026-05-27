@@ -1,0 +1,213 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="关于我们 | 异宠指南" description="异宠指南的创立初衷与内容标准——为什么做这个网站，我们的内容如何保证质量，目前覆盖哪些异宠品种。">
+  <section class="about">
+    <div class="about-hero">
+      <h1>关于异宠指南</h1>
+      <p class="about-subtitle">系统化的异宠饲养知识库，从零开始</p>
+    </div>
+
+    <div class="about-content">
+      <div class="about-section">
+        <h2>为什么做这个网站？</h2>
+        <p>2026年的中文互联网，你想养一只守宫、一条玉米蛇或者一只鬃狮蜥，能去哪里找靠谱的信息？</p>
+        <p>贴吧里帖子是散的，知乎上答案质量参差不齐，小红书种草帖只告诉你"可爱"不告诉你"责任"。新手往往在买完宠物之后才发现——饲养箱买小了、垫材用错了、温控没装对。</p>
+        <p>异宠指南想做的，就是填补这个空白：<strong>一份系统化的、从零开始的、中文的异宠饲养知识库</strong>。</p>
+      </div>
+
+      <div class="about-section">
+        <h2>我们的内容标准</h2>
+        <div class="standards-grid">
+          <div class="standard-card">
+            <h3>科学依据</h3>
+            <p>每个参数都有出处，参考文献来自兽医手册、品种协会饲养标准、学术论文</p>
+          </div>
+          <div class="standard-card">
+            <h3>新手友好</h3>
+            <p>不预设你养过任何宠物。每个概念第一次出现都会解释</p>
+          </div>
+          <div class="standard-card">
+            <h3>持续更新</h3>
+            <p>饲养知识在进步，我们的文章也在迭代。每篇文章标注最后更新时间</p>
+          </div>
+          <div class="standard-card">
+            <h3>不做广告</h3>
+            <p>推荐装备基于实际使用体验，不接受品牌付费推广</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-section">
+        <h2>目前覆盖的品种</h2>
+        <div class="species-list">
+          <div class="species-item">
+            <h3>守宫</h3>
+            <p>豹纹守宫、睫角守宫、肥尾守宫</p>
+          </div>
+          <div class="species-item">
+            <h3>玉米蛇</h3>
+            <p>多种基因品系，适合新手的第一条蛇</p>
+          </div>
+          <div class="species-item">
+            <h3>鬃狮蜥</h3>
+            <p>互动性强，需要UVB照射</p>
+          </div>
+          <div class="species-item">
+            <h3>角蛙</h3>
+            <p>最"佛系"的异宠，但也死于无知</p>
+          </div>
+        </div>
+        <p class="species-note">更多品种饲养指南正在撰写中。</p>
+      </div>
+
+      <div class="about-section">
+        <h2>联系我们</h2>
+        <p>如果你有饲养经验想分享，或者发现了内容中的错误，欢迎通过以下方式联系：</p>
+        <ul class="contact-list">
+          <li>邮箱：<a href="mailto:hello@yichongzhinan.com">hello@yichongzhinan.com</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .about {
+    max-width: var(--max-width-wide);
+    margin: 0 auto;
+    padding: var(--space-2xl) var(--space-md) 5rem;
+  }
+
+  .about-hero {
+    text-align: center;
+    padding: var(--space-2xl) 0;
+    margin-bottom: var(--space-2xl);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .about-hero h1 {
+    font-size: 2.2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .about-subtitle {
+    font-size: 1.1rem;
+    color: var(--color-text-secondary);
+  }
+
+  .about-content {
+    max-width: var(--max-width);
+    margin: 0 auto;
+  }
+
+  .about-section {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .about-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-lg);
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--color-primary-light);
+  }
+
+  .about-section p {
+    font-size: 1.05rem;
+    line-height: 1.85;
+    margin-bottom: 1.25rem;
+    color: var(--color-text);
+  }
+
+  .about-section strong {
+    color: var(--color-primary-dark);
+  }
+
+  /* Standards Grid */
+  .standards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .standard-card {
+    background: var(--color-primary-light);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+  }
+
+  .standard-card h3 {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-primary-dark);
+  }
+
+  .standard-card p {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+    color: var(--color-text-secondary);
+  }
+
+  /* Species List */
+  .species-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .species-item {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+  }
+
+  .species-item h3 {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+  }
+
+  .species-item p {
+    font-size: 0.85rem;
+    margin-bottom: 0;
+    color: var(--color-text-secondary);
+  }
+
+  .species-note {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin-top: 1rem;
+  }
+
+  /* Contact */
+  .contact-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .contact-list li {
+    margin-bottom: 0.75rem;
+  }
+
+  @media (max-width: 768px) {
+    .about {
+      padding: var(--space-xl) var(--space-md) 3rem;
+    }
+
+    .about-hero h1 {
+      font-size: 1.75rem;
+    }
+
+    .standards-grid,
+    .species-list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
