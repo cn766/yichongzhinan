@@ -273,4 +273,16 @@ hr {
   body {
     line-height: 1.8;
   }
+
+  /* 表格横向滚动 */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  th, td {
+    white-space: nowrap;
+  }
 }

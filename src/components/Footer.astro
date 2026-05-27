@@ -8,6 +8,7 @@
       <div class="link-group">
         <h4>导航</h4>
         <a href="/">首页</a>
+        <a href="/species/">物种大全</a>
         <a href="/blog/">文章</a>
         <a href="/about">关于</a>
       </div>
@@ -16,6 +17,12 @@
         <a href="/blog/shougong-xinshou/">守宫新手入门</a>
         <a href="/blog/yumishe-xinshou/">玉米蛇新手入门</a>
         <a href="/blog/zongshilv-xinshou/">鬃狮蜥新手入门</a>
+      </div>
+      <div class="link-group">
+        <h4>实用工具</h4>
+        <a href="/blog/wenkong-xitong/">温控系统搭建</a>
+        <a href="/blog/siyangxiang-xuangou/">饲养箱选购指南</a>
+        <a href="/blog/xinshou-10-cuowu/">新手10大避坑</a>
       </div>
     </div>
   </div>
@@ -85,5 +92,26 @@
     color: var(--color-text-muted);
     font-size: 0.85rem;
     margin: 0;
+  }
+
+  @media (max-width: 640px) {
+    .site-footer {
+      padding: 2rem 1rem 1rem;
+      margin-top: 2.5rem;
+    }
+
+    .footer-inner {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .footer-links {
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .link-group {
+      min-width: 100px;
+    }
   }
 </style>
