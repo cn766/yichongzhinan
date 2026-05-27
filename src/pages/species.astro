@@ -1,0 +1,320 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+
+// 物种定义：每个物种关联的文章
+const speciesGroups = [
+  {
+    name: '守宫',
+    emoji: '🦎',
+    intro: '爬宠界的新手首选，体型小巧、性格温和、寿命10-20年。',
+    species: [
+      { name: '豹纹守宫', sub: 'Leopard Gecko', desc: '性情最温和，颜色品系最丰富，饲养难度最低', difficulty: '⭐', filterTag: '豹纹守宫' },
+      { name: '睫角守宫', sub: 'Crested Gecko', desc: '不需要活虫饲料，吃果泥即可，树栖需要高缸', difficulty: '⭐', filterTag: '睫角守宫' },
+      { name: '肥尾守宫', sub: 'African Fat-Tailed Gecko', desc: '比豹纹守宫更敦实，需要稍高湿度，性格同样温和', difficulty: '⭐', filterTag: '肥尾守宫' },
+      { name: '巨人守宫', sub: 'Leachianus Gecko', desc: '世界上最大的守宫，体型是普通守宫的3-5倍', difficulty: '⭐⭐', filterTag: '巨人守宫' },
+    ]
+  },
+  {
+    name: '蛇类',
+    emoji: '🐍',
+    intro: '玉米蛇是全世界最受欢迎的宠物蛇，温顺无毒、易上手、品系丰富。',
+    species: [
+      { name: '玉米蛇', sub: 'Corn Snake / Pantherophis guttatus', desc: '性格最好的宠物蛇之一，无毒不伤人，品系上百种', difficulty: '⭐', filterTag: '玉米蛇' },
+    ]
+  },
+  {
+    name: '蜥蜴类',
+    emoji: '🦎',
+    intro: '日行性蜥蜴需要UVB光照和精确温控，但互动性极强。',
+    species: [
+      { name: '鬃狮蜥', sub: 'Bearded Dragon / Pogona vitticeps', desc: '"蜥蜴界的金毛"，性格稳定可上手，有丰富的肢体语言', difficulty: '⭐⭐', filterTag: '鬃狮蜥' },
+    ]
+  },
+  {
+    name: '蛙类',
+    emoji: '🐸',
+    intro: '角蛙是最省心的异宠之一，但也是最容易被"好心养死"的。',
+    species: [
+      { name: '角蛙', sub: 'Horned Frog / Ceratophrys', desc: '静态捕食者，几乎不需要互动，但需要半水环境和精确温湿度', difficulty: '⭐', filterTag: '角蛙' },
+    ]
+  }
+];
+
+// 为每个物种匹配相关文章
+const speciesWithArticles = speciesGroups.map(group => ({
+  ...group,
+  species: group.species.map(sp => {
+    const articles = allPosts
+      .filter(p => p.data.tags.some(t => t === sp.filterTag))
+      .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+    return { ...sp, articles };
+  })
+}));
+---
+
+<Layout title="物种大全 | 异宠指南" description="异宠物种大全：守宫、玉米蛇、鬃狮蜥、角蛙等热门异宠品种介绍、饲养难度对比和指南文章汇总。">
+
+<section class="species-page">
+  <header class="species-hero">
+    <h1>物种大全</h1>
+    <p class="hero-sub">不知道该养什么？先看看每个物种的脾气再说。</p>
+  </header>
+
+  <div class="species-content">
+    {speciesWithArticles.map(group => (
+      <section class="species-group">
+        <div class="group-header">
+          <span class="group-emoji">{group.emoji}</span>
+          <div class="group-info">
+            <h2 class="group-name">{group.name}</h2>
+            <p class="group-intro">{group.intro}</p>
+          </div>
+        </div>
+
+        <div class="species-grid">
+          {group.species.map(sp => (
+            <div class="species-card">
+              <div class="species-card-header">
+                <div class="species-name-group">
+                  <span class="difficulty">{sp.difficulty}</span>
+                  <h3 class="species-name">{sp.name}</h3>
+                </div>
+                <p class="species-sub">{sp.sub}</p>
+              </div>
+              <p class="species-desc">{sp.desc}</p>
+              {sp.articles.length > 0 && (
+                <div class="species-links">
+                  <span class="links-label">阅读指南：</span>
+                  <ul class="links-list">
+                    {sp.articles.map(article => (
+                      <li>
+                        <a href={`/blog/${article.slug}`}>
+                          {article.data.title.replace(/^(.+?)——.+$/, '$1').replace(/^(.+?)：.+$/, '$1')}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {sp.articles.length === 0 && (
+                <div class="species-links-empty">
+                  <span>暂无相关文章</span>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+
+  <footer class="species-footer">
+    <p>还在纠结？试试从<strong>豹纹守宫</strong>或<strong>角蛙</strong>开始——它们是异宠圈公认的"入门双雄"。</p>
+    <a href="/blog" class="all-articles-link">浏览全部文章 →</a>
+  </footer>
+</section>
+
+</Layout>
+
+<style>
+  .species-page {
+    max-width: var(--max-width-wide);
+    margin: 0 auto;
+    padding: var(--space-2xl) var(--space-md);
+  }
+
+  .species-hero {
+    text-align: center;
+    margin-bottom: var(--space-3xl);
+  }
+
+  .species-hero h1 {
+    font-family: var(--font-serif);
+    font-size: 2.25rem;
+    color: var(--color-text);
+    margin-bottom: var(--space-sm);
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+  }
+
+  .species-group {
+    margin-bottom: var(--space-3xl);
+  }
+
+  .group-header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-md);
+    border-bottom: 2px solid var(--color-primary-light);
+  }
+
+  .group-emoji {
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .group-name {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    color: var(--color-text);
+    margin-bottom: var(--space-xs);
+  }
+
+  .group-intro {
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    max-width: 600px;
+  }
+
+  .species-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg);
+  }
+
+  .species-card {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-md);
+    padding: var(--space-xl);
+  }
+
+  .species-card-header {
+    margin-bottom: var(--space-md);
+  }
+
+  .species-name-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xs);
+  }
+
+  .difficulty {
+    font-size: 0.7rem;
+    background: var(--color-primary-light);
+    color: var(--color-primary-dark);
+    padding: 0.1rem 0.5rem;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+  }
+
+  .species-name {
+    font-size: 1.2rem;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .species-sub {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    margin: 0;
+  }
+
+  .species-desc {
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--space-md);
+  }
+
+  .species-links {
+    border-top: 1px solid var(--color-border-light);
+    padding-top: var(--space-md);
+  }
+
+  .links-label {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+    margin-bottom: var(--space-xs);
+    display: block;
+  }
+
+  .links-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .links-list a {
+    font-size: 0.9rem;
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .links-list a:hover {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
+  }
+
+  .species-links-empty {
+    border-top: 1px solid var(--color-border-light);
+    padding-top: var(--space-md);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  .species-footer {
+    text-align: center;
+    margin-top: var(--space-3xl);
+    padding-top: var(--space-2xl);
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  .species-footer p {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-lg);
+  }
+
+  .species-footer strong {
+    color: var(--color-accent);
+  }
+
+  .all-articles-link {
+    display: inline-block;
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 1.05rem;
+    transition: color 0.2s;
+  }
+
+  .all-articles-link:hover {
+    color: var(--color-primary-dark);
+  }
+
+  @media (max-width: 768px) {
+    .species-page {
+      padding: var(--space-lg) var(--space-md);
+    }
+
+    .species-hero h1 {
+      font-size: 1.75rem;
+    }
+
+    .species-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .group-header {
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+  }
+</style>
