@@ -5,6 +5,20 @@ pubDate: 2026-05-27
 category: "新手指南"
 tags: ["玉米蛇", "宠物蛇", "新手指南", "爬宠"]
 heroImage: "/images/yumishe-hero.jpg"
+schemaType: HowTo
+howToSteps:
+  - name: 了解玉米蛇的基本特性
+    text: 认识玉米蛇的体型、寿命、性格，理解为什么它是最适合新手的宠物蛇。
+  - name: 选择合适的品种品系
+    text: 对比原色、白化、血红、雪白、薰衣草等品系的价格、特点和推荐指数。
+  - name: 搭建标准饲养箱
+    text: 确定饲养箱尺寸，配置加热垫、温控器、垫材、水盆和躲避穴。
+  - name: 制定科学喂食计划
+    text: 根据蛇的体重和年龄，确定乳鼠/小白鼠的规格、喂食频率和注意事项。
+  - name: 掌握上手与日常管理技巧
+    text: 包括喂食后禁碰时间、蜕皮期管理、排泄物观察和上手方法。
+  - name: 应对常见饲养问题
+    text: 拒食排查、吐食处理、应激反应、冬季降温等常见问题的解决方案。
 ---
 
 import HeroImage from '../../components/HeroImage.astro';

@@ -20,20 +20,30 @@ const modifiedDate = post.data.updatedDate
   ? post.data.updatedDate.toISOString()
   : publishedDate;
 
-const schemaData = {
+// 估算字数（中文字符数）
+const wordCount = (post.body || '').replace(/\s/g, '').length;
+
+// 构建 Schema.org JSON-LD
+const baseArticle = {
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": post.data.title,
   "description": post.data.description,
+  "url": postUrl,
   "datePublished": publishedDate,
   "dateModified": modifiedDate,
+  "inLanguage": "zh-CN",
+  "isAccessibleForFree": true,
+  "wordCount": wordCount,
   "author": {
     "@type": "Person",
-    "name": "异宠指南"
+    "name": "异宠指南",
+    "url": siteUrl
   },
   "publisher": {
     "@type": "Organization",
     "name": "异宠指南",
+    "url": siteUrl,
     "logo": {
       "@type": "ImageObject",
       "url": `${siteUrl}/favicon.svg`
@@ -42,13 +52,91 @@ const schemaData = {
   "mainEntityOfPage": {
     "@type": "WebPage",
     "@id": postUrl
-  }
+  },
+  "about": {
+    "@type": "Thing",
+    "name": post.data.category
+  },
+  ...(post.data.heroImage && {
+    "image": {
+      "@type": "ImageObject",
+      "url": new URL(post.data.heroImage, siteUrl).toString(),
+      "width": 1200,
+      "height": 630
+    }
+  }),
+  ...(post.data.tags.length > 0 && {
+    "keywords": post.data.tags.join(', ')
+  })
 };
+
+// 面包屑导航
+const breadcrumbList = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首页",
+      "item": siteUrl
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": post.data.category,
+      "item": `${siteUrl}/blog`
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": post.data.title,
+      "item": postUrl
+    }
+  ]
+};
+
+// HowTo 类型 Schema
+const howToSchema = post.data.schemaType === 'HowTo' && post.data.howToSteps ? {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": post.data.title,
+  "description": post.data.description,
+  "url": postUrl,
+  "image": post.data.heroImage ? new URL(post.data.heroImage, siteUrl).toString() : undefined,
+  "step": post.data.howToSteps.map((step, i) => ({
+    "@type": "HowToStep",
+    "position": i + 1,
+    "name": step.name,
+    "text": step.text,
+    "url": `${postUrl}#step-${i + 1}`
+  }))
+} : null;
+
+// FAQ 类型 Schema
+const faqSchema = post.data.schemaType === 'FAQ' && post.data.faqItems ? {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": post.data.faqItems.map(item => ({
+    "@type": "Question",
+    "name": item.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": item.answer
+    }
+  }))
+} : null;
 ---
 
 <Layout title={`${post.data.title} | 异宠指南`} description={post.data.description}>
   <!-- Schema.org Article JSON-LD -->
-  <script type="application/ld+json" set:html={JSON.stringify(schemaData, null, 2)} />
+  <script type="application/ld+json" set:html={JSON.stringify(baseArticle, null, 2)} />
+  <!-- Schema.org BreadcrumbList -->
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbList, null, 2)} />
+  <!-- Schema.org HowTo (条件渲染) -->
+  {howToSchema && <script type="application/ld+json" set:html={JSON.stringify(howToSchema, null, 2)} />}
+  <!-- Schema.org FAQPage (条件渲染) -->
+  {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema, null, 2)} />}
 
   <article class="blog-post">
     <div class="post-container">
