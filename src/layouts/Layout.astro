@@ -7,6 +7,10 @@ import '../styles/global.css';
 const { title = '异宠指南', description = '中国第一个异宠新手系统化饲养指南——守宫、玉米蛇、鬃狮蜥、角蛙全面饲养知识' } = Astro.props;
 const siteUrl = 'https://yichongzhinan.com';
 const pageUrl = new URL(Astro.url.pathname, siteUrl).toString();
+
+// Google Analytics & Search Console（通过 Vercel 环境变量注入，本地开发时为空）
+const gaId = import.meta.env.PUBLIC_GA_ID;
+const gscCode = import.meta.env.PUBLIC_GSC_CODE;
 ---
 
 <!doctype html>
@@ -21,6 +25,22 @@ const pageUrl = new URL(Astro.url.pathname, siteUrl).toString();
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={pageUrl} />
+
+    <!-- Google Search Console 验证（部署后在 Vercel 设置 PUBLIC_GSC_CODE） -->
+    {gscCode && <meta name="google-site-verification" content={gscCode} />}
+
+    <!-- Google Analytics (GA4) -->
+    {gaId && (
+      <>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
+        <script>
+          {`window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${gaId}');`}
+        </script>
+      </>
+    )}
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
